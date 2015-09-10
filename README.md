@@ -1,21 +1,18 @@
-Apache Spark on Docker
+Apache Spark 1.5 on Docker
 ==========
 
-[![DockerPulls](https://img.shields.io/docker/pulls/sequenceiq/spark.svg)](https://registry.hub.docker.com/u/sequenceiq/spark/)
-[![DockerStars](https://img.shields.io/docker/stars/sequenceiq/spark.svg)](https://registry.hub.docker.com/u/sequenceiq/spark/)
-
-
-This repository contains a Docker file to build a Docker image with Apache Spark. This Docker image depends on our previous [Hadoop Docker](https://github.com/sequenceiq/hadoop-docker) image, available at the SequenceIQ [GitHub](https://github.com/sequenceiq) page.
-The base Hadoop Docker image is also available as an official [Docker image](https://registry.hub.docker.com/u/sequenceiq/hadoop-docker/).
+This repository contains a Docker file to build a Docker image with Apache Spark 1.5. This is essentially a hacked fork of the well-known sequenceiq/spark images, so sequenceiq deserves all of the credit.
 
 ##Pull the image from Docker Repository
 ```
-docker pull sequenceiq/spark:1.4.0
+docker pull mpeskin/spark:1.5.0
 ```
 
 ## Building the image
 ```
-docker build --rm -t sequenceiq/spark:1.4.0 .
+first download spark-1.5.0-bin-hadoop2.6.tgz from the Spark download site and copy it to the project directory containing the Dockerfile. This is an unfortunate hack needed to get around corporate firewall issues. Then:
+
+docker build --rm -t mpeskin/spark:1.5.0 .
 ```
 
 ## Running the image
@@ -24,16 +21,16 @@ docker build --rm -t sequenceiq/spark:1.4.0 .
 * in your /etc/hosts file add $(boot2docker ip) as host 'sandbox' to make it easier to access your sandbox UI
 * open yarn UI ports when running container
 ```
-docker run -it -p 8088:8088 -p 8042:8042 -h sandbox sequenceiq/spark:1.4.0 bash
+docker run -it -p 8088:8088 -p 8042:8042 -h sandbox mpeskin/spark:1.5.0 bash
 ```
 or
 ```
-docker run -d -h sandbox sequenceiq/spark:1.4.0 -d
+docker run -d -h sandbox mpeskin/spark:1.5.0 -d
 ```
 
 ## Versions
 ```
-Hadoop 2.6.0 and Apache Spark v1.4.0 on Centos 
+Hadoop 2.6.0 and Apache Spark v1.5.0 on Centos 
 ```
 
 ## Testing

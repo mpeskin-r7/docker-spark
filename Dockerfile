@@ -1,14 +1,20 @@
 FROM sequenceiq/hadoop-docker:2.6.0
-MAINTAINER SequenceIQ
+MAINTAINER mpeskin
 
 #support for Hadoop 2.6.0
-RUN curl -s http://d3kbcqa49mib13.cloudfront.net/spark-1.4.0-bin-hadoop2.6.tgz | tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s spark-1.4.0-bin-hadoop2.6 spark
+
+# RUN curl -s http://d3kbcqa49mib13.cloudfront.net/spark-1.5.0-bin-hadoop2.6.tgz | tar -xz -C /usr/local/
+# Running curl in the Docker build creates problems due to corporate proxy server. Try a local approach
+COPY spark-1.5.0-bin-hadoop2.6.tgz /usr/local/spark-1.5.0-bin-hadoop2.6.tgz
+RUN tar -xz -f /usr/local/spark-1.5.0-bin-hadoop2.6.tgz -C /usr/local/
+RUN rm /usr/local/spark-1.5.0-bin-hadoop2.6.tgz
+
+RUN cd /usr/local && ln -s spark-1.5.0-bin-hadoop2.6 spark
 ENV SPARK_HOME /usr/local/spark
 RUN mkdir $SPARK_HOME/yarn-remote-client
 ADD yarn-remote-client $SPARK_HOME/yarn-remote-client
 
-RUN $BOOTSTRAP && $HADOOP_PREFIX/bin/hadoop dfsadmin -safemode leave && $HADOOP_PREFIX/bin/hdfs dfs -put $SPARK_HOME-1.4.0-bin-hadoop2.6/lib /spark
+RUN $BOOTSTRAP && $HADOOP_PREFIX/bin/hdfs dfsadmin -safemode leave && $HADOOP_PREFIX/bin/hdfs dfs -put $SPARK_HOME-1.5.0-bin-hadoop2.6/lib /spark
 
 ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
@@ -17,8 +23,8 @@ COPY bootstrap.sh /etc/bootstrap.sh
 RUN chown root.root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
 
-#install R
-RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-RUN yum -y install R
+# install R
+# RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+# RUN yum -y install R
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
